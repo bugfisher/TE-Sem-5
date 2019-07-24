@@ -1,0 +1,139 @@
+*Get the total no of customers.
+
+mysql> select count(user_id) from customer;
++----------------+
+| count(user_id) |
++----------------+
+|             10 |
++----------------+
+
+*Display average purchase amount of all the customers.
+
+mysql> select avg(total_price) from product_order;
++------------------+
+| avg(total_price) |
++------------------+
+|      134438.4615 |
++------------------+
+
+*Display total purchase amount of all the customers.
+
+mysql> select sum(total_price) as total from product_order;
++---------+
+| total   |
++---------+
+| 1747700 |
++---------+
+
+
+*Find DAYNAME, MONTHNAME and YEAR of the purchase order made on “1995-11-2016”
+
+mysql> select dayname(order_date),monthname(order_date),year(order_date) from product_order where order_date = '1995-11-16 11:15:14';
++---------------------+-----------------------+------------------+
+| dayname(order_date) | monthname(order_date) | year(order_date) |
++---------------------+-----------------------+------------------+
+| Thursday            | November              |             1995 |
++---------------------+-----------------------+------------------+
+1 row in set (0.00 sec)
+
+
+
+*Get current date & time, current time, current date
+
+mysql> select current_date(),current_time(),current_timestamp();
++----------------+----------------+---------------------+
+| current_date() | current_time() | current_timestamp() |
++----------------+----------------+---------------------+
+| 2019-07-17     | 11:36:10       | 2019-07-17 11:36:10 |
++----------------+----------------+---------------------+
+
+
+*Get 6 month future & past date using interval function based on current date and name the column accordingly.
+
+mysql> select now() as CURRENT , (now() + interval 6 month) as future_6_month , (now() - interval 6 month) as past_6_month;
++---------------------+---------------------+---------------------+
+| CURRENT             | future_6_month      | past_6_month        |
++---------------------+---------------------+---------------------+
+| 2019-07-17 11:56:54 | 2020-01-17 11:56:54 | 2019-01-17 11:56:54 |
++---------------------+---------------------+---------------------+
+
+*Find purchase details of the customers group by product category.
+
+mysql> select product_id, sum(total_price),sum(quantity) from product_order group by product_id;
++------------+------------------+---------------+
+| product_id | sum(total_price) | sum(quantity) |
++------------+------------------+---------------+
+|          1 |          1600000 |             5 |
+|          2 |            20000 |             1 |
+|          4 |            10000 |             2 |
+|          5 |            21000 |             3 |
+|          6 |            63000 |             7 |
+|          7 |            10000 |             5 |
+|          8 |            18000 |             3 |
+|          9 |             2400 |             4 |
+|         10 |             3600 |            36 |
++------------+------------------+---------------+
+
+*Find the purchase details of all the customers who made shopping today.(Using having clause)
+
+mysql> select product_id, sum(total_price),sum(quantity),order_date from product_order group by product_id,order_date having date(order_date)='2019-04-08';
++------------+------------------+---------------+---------------------+
+| product_id | sum(total_price) | sum(quantity) | order_date          |
++------------+------------------+---------------+---------------------+
+|          1 |          1500000 |             3 | 2019-04-08 12:14:13 |
++------------+------------------+---------------+---------------------+
+1 row in set (0.00 sec)
+
+
+Get the name and quantity of product which have either 10 or 20 or 30 quantities.
+
+
+
+mysql> select product.p_name,product_order.quantity from product,product_order where quantity = 10 || quantity = 20 || quantity = 25 && product_order.product_id=product.p_id;
++-------------+----------+
+| p_name      | quantity |
++-------------+----------+
+| SelfieStick |       25 |
++-------------+----------+
+
+mysql> select product.p_name,product_order.quantity from product,product_order where quantity in (10,3) && product_order.product_id=product.p_id;
++-------------+----------+
+| p_name      | quantity |
++-------------+----------+
+| SelfieStick |        3 |
+| Headphones  |        3 |
+| Harddisk    |        3 |
+| Laptop      |        3 |
+| SelfieStick |        3 |
++-------------+----------+
+
+
+
+select * from customer where exists ( select * from product_order where customer.user_id = product_order.user_id);
+
+
+ select * from customer where customer.user_id = any(select product_order.user_id from product_order where  product_order.quantity=5);
+
+
+select user_name,order_id from customer c inner join product_order p where p.user_id = c.user_id;
+
+
+ select order_id,user_name,p_id from customer c inner join product_order o on o.user_id =c.user_id inner join product p on p.p_id=o.product_id ;
+
+
+mysql> update test_view1 set user_name="raju" where user_id=2;
+
+
+mysql> insert into test_view2 (user_name,email,phone_no,dob,address) values('mohak','mohak123@gmail.com',9090989098,'1999-09-08','Nagpur');
+
+
+mysql> delete from test_view2 where user_id=12;
+
+ sudo mysqldump -u root -p vivek_database > vivek_database_1.sql;
+
+
+
+
+
+
+
